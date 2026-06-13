@@ -153,9 +153,3 @@ We enforce RBAC at **two layers**:
 - **Response:** `"Access Denied: SQL RAG queries are only available to roles with analytical responsibilities: billing_executive and admin."`
 
 ---
-
-## 🚀 Key Tool Substitutions & Customizations
-
-1. **Custom Document Heading Breadcrumbs:** Standard Docling chunkers (`HybridChunker`) do not carry full parent header hierarchies in PDF outputs because layout analysis treats headers linearly on Level 1. We wrote a custom heading compiler that scans the document tree linearly, classifies heading weights, builds a parent-child breadcrumb path (e.g. `Type 2 Diabetes Mellitus > Pharmacological management`), and prepends it to the chunk content. This drastically improved semantic retrieval matches for exact term lookups.
-2. **Direct Cross-Encoder implementation:** Instead of using LangChain wrappers which occasionally throw import mismatch warnings, we implemented the `sentence-transformers/CrossEncoder` natively in our RAG module. This allowed us to output detailed rankings and scores directly to the developer terminal, showing how the MS-MARCO model filters the top-10 candidates down to the top-3.
-3. **Secure SQL Execution:** SQL translation can occasionally generate write queries or leak structure. We added strict read-only keyword verification (`SELECT` check and prevention of `INSERT`, `UPDATE`, `DROP`) inside `backend/database.py` before queries run on SQLite.
